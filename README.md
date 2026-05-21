@@ -21,12 +21,13 @@ The Conveyor resource acts as a high-speed "Implementation Firewall" between iRO
 - CMake 3.15+
 - C++20 Compiler (GCC 10+)
 
-### Build
+### Build & Test (Standalone)
+Verify the plugin logic without a full iRODS installation:
 ```bash
-mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
+mkdir build_standalone && cd build_standalone
+cmake .. -DSTANDALONE_TEST=ON -DCMAKE_BUILD_TYPE=Debug
 make -j$(nproc)
-sudo make install
+./conveyor_standalone_test
 ```
 
 ## Configuration

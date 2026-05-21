@@ -1,4 +1,9 @@
+#ifndef STANDALONE_MODE
+#define IRODS_ENABLE_SYSLOG
 #include "irods/irods_logger.hpp"
+#else
+#include "irods/irods_logger.hpp" // Use mock header
+#endif
 
 #include <mutex>
 #include <shared_mutex>

@@ -9,9 +9,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 # --- Dependencies ---
-find_package(IRODS REQUIRED)
-find_package(fmt REQUIRED)
-find_package(spdlog REQUIRED)
+# Primary iRODS build requires these
+if(NOT STANDALONE_TEST)
+    find_package(IRODS REQUIRED)
+    find_package(fmt REQUIRED)
+    find_package(spdlog REQUIRED)
+endif()
 
 include(FetchContent)
 FetchContent_Declare(
@@ -21,38 +24,59 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(libconveyor)
 
-# --- Build Plugin ---
-add_library(irods_resource_plugin_conveyor MODULE src/libconveyor_resource.cpp)
+# --- Build Standalone Test ---
+if(STANDALONE_TEST)
+    add_executable(conveyor_standalone_test test/standalone_test.cpp src/libconveyor_resource.cpp)
+    target_compile_definitions(conveyor_standalone_test PRIVATE STANDALONE_MODE)
+    target_include_directories(conveyor_standalone_test PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/test/mock_irods
+        /opt/irods-externals/boost1.81.0-2/include
+        ${libconveyor_SOURCE_DIR}/include
+    )
+    target_link_libraries(conveyor_standalone_test PRIVATE
+        conveyor
+        Boost::boost
+    )
+    # Ensure boost is found for standalone
+    find_package(Boost REQUIRED)
+endif()
 
-target_compile_definitions(irods_resource_plugin_conveyor PRIVATE RODS_SERVER IRODS_ENABLE_SYSLOG)
+# --- Build iRODS Plugin ---
+if(NOT STANDALONE_TEST)
+    add_library(irods_resource_plugin_conveyor MODULE src/libconveyor_resource.cpp)
 
-target_include_directories(irods_resource_plugin_conveyor PRIVATE
-    ${IRODS_INCLUDE_DIRS}
-    /opt/irods-externals/boost1.81.0-2/include
-    ${libconveyor_SOURCE_DIR}/include
-)
+    target_compile_definitions(irods_resource_plugin_conveyor PRIVATE RODS_SERVER IRODS_ENABLE_SYSLOG)
 
-target_link_libraries(irods_resource_plugin_conveyor PRIVATE
-    IRODS::IRODS
-    fmt::fmt
-    spdlog::spdlog
-    conveyor
-)
+    target_include_directories(irods_resource_plugin_conveyor PRIVATE
+        ${IRODS_INCLUDE_DIRS}
+        /opt/irods-externals/boost1.81.0-2/include
+        ${libconveyor_SOURCE_DIR}/include
+    )
+
+    target_link_libraries(irods_resource_plugin_conveyor PRIVATE
+        IRODS::IRODS
+        fmt::fmt
+        spdlog::spdlog
+        conveyor
+    )
+endif()
 
 # --- Install ---
-set(CMAKE_INSTALL_PREFIX "/")
+if(NOT STANDALONE_TEST)
+    set(CMAKE_INSTALL_PREFIX "/")
 
-install(TARGETS irods_resource_plugin_conveyor
-    LIBRARY DESTINATION /usr/lib/irods/plugins/resources
-)
+    install(TARGETS irods_resource_plugin_conveyor
+        LIBRARY DESTINATION /usr/lib/irods/plugins/resources
+    )
 
-set(IRODS_SCRIPTS_DIRECTORY "/var/lib/irods/scripts/irods/test")
+    set(IRODS_SCRIPTS_DIRECTORY "/var/lib/irods/scripts/irods/test")
 
-install(
-    FILES "${CMAKE_CURRENT_SOURCE_DIR}/packaging/test_irods_resource_plugin_conveyor.py"
-    DESTINATION "${IRODS_SCRIPTS_DIRECTORY}"
-    PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
-)
+    install(
+        FILES "${CMAKE_CURRENT_SOURCE_DIR}/packaging/test_irods_resource_plugin_conveyor.py"
+        DESTINATION "${IRODS_SCRIPTS_DIRECTORY}"
+        PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
+    )
+endif()
 
 # --- Packaging ---
 set(CPACK_SET_DESTDIR ON)
