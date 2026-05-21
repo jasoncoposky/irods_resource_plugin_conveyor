@@ -41,10 +41,26 @@ iadmin addchildtoresc conveyor_resc unixfilesystem_resc
 
 ## Performance Benefits
 
-By leveraging the new `citor` foundation in `libconveyor`, this plugin provides:
-- **~6x Speedup** in highly concurrent multi-stream workloads compared to the legacy dedicated-thread model.
+By leveraging the new `citor` foundation in `libconveyor`, this plugin provides significant speedups by overlapping I/O with application logic.
+
+### Standalone Benchmark Results
+*Simulated Backend Latency: 2000 µs (2ms)*
+*Data Volume: 100MB (64KB blocks)*
+
+| Operation | Raw POSIX | Conveyor Plugin | Speedup |
+| :--- | :--- | :--- | :--- |
+| **Write Throughput** | 28.1 MB/s | **54.9 MB/s** | **~1.95x** |
+| **Read Throughput** | 29.1 MB/s | **70.7 MB/s** | **~2.43x** |
+
 - **Sub-microsecond Handoff** between iRODS and the I/O compute pool.
 - **Elimination of Context-Switch Storms** during massive parallel file transfers.
+- **Adaptive Prefetching** effectively hides 2ms of network latency during reads.
+
+### Run the Benchmark
+```bash
+cd build_standalone
+./conveyor_plugin_benchmark
+```
 
 ## License
 BSD 3-Clause License.
