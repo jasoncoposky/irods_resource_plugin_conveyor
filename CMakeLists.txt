@@ -37,6 +37,19 @@ if(STANDALONE_TEST)
         conveyor
         Boost::boost
     )
+
+    add_executable(conveyor_plugin_benchmark test/benchmark_plugin.cpp src/libconveyor_resource.cpp)
+    target_compile_definitions(conveyor_plugin_benchmark PRIVATE STANDALONE_MODE)
+    target_include_directories(conveyor_plugin_benchmark PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/test/mock_irods
+        /opt/irods-externals/boost1.81.0-2/include
+        ${libconveyor_SOURCE_DIR}/include
+    )
+    target_link_libraries(conveyor_plugin_benchmark PRIVATE
+        conveyor
+        Boost::boost
+    )
+    
     # Ensure boost is found for standalone
     find_package(Boost REQUIRED)
 endif()
