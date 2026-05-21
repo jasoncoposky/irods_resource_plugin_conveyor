@@ -36,6 +36,7 @@ namespace irods {
     const std::string RESOURCE_CLASS = "resource_class";
     const std::string RESOURCE_CHECK_PATH_PERM = "check_path_perm";
     const std::string RESOURCE_CREATE_PATH = "create_path";
+    const std::string RESOURCE_CONTEXT = "resource_context";
 
     class plugin_context {
         plugin_property_map& props_;

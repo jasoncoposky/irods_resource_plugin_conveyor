@@ -18,6 +18,7 @@
 #include "irods/irods_file_object.hpp"
 #include "irods/irods_hierarchy_parser.hpp"
 #include "irods/irods_resource_redirect.hpp"
+#include "irods/irods_resource_constants.hpp"
 #include "irods/rodsErrorTable.h"
 
 #include "libconveyor/conveyor.h"
@@ -51,6 +52,8 @@ namespace {
     static std::unordered_map<std::string, conveyor_t*> g_conveyor_table;
     static std::shared_mutex g_conveyor_mutex;
 
+    const std::string CONVEYOR_INTENT_PROP = "conveyor_intent";
+
     irods::error get_conveyor(irods::plugin_context& _ctx, conveyor_t*& conv) {
         auto fco = boost::dynamic_pointer_cast<irods::file_object>(_ctx.fco());
         if (!fco) return ERROR(SYS_INVALID_INPUT_PARAM, "conveyor: null fco");
@@ -67,17 +70,44 @@ namespace {
             }
         }
 
-        // Create new conveyor
+        // --- TUNING & PREDICTIVE SIZING ---
+        std::string intent = ""; 
+        fco->get_property<std::string>(CONVEYOR_INTENT_PROP, intent);
+
         conveyor_config_t cfg = {0};
         cfg.handle = (storage_handle_t)(intptr_t)fco->file_descriptor();
         cfg.flags = fco->flags();
         cfg.ops = { plugin_pwrite, plugin_pread, plugin_lseek };
         
-        // Adaptive Scaling: 64MB buffers, max 1GB
+        // Base Sizing: 64MB buffers, 4MB chunks
         cfg.initial_write_size = 64 * 1024 * 1024;
-        cfg.max_write_size = 1024 * 1024 * 1024;
         cfg.initial_read_size = 64 * 1024 * 1024;
+        cfg.max_write_size = 1024 * 1024 * 1024;
         cfg.max_read_size = 1024 * 1024 * 1024;
+        cfg.write_chunk_size = 4 * 1024 * 1024;
+        cfg.read_chunk_size = 4 * 1024 * 1024;
+
+        // Parse Tuning from Resource Context (e.g. "write_chunk_size=16777216;read_chunk_size=16777216")
+        std::string context;
+        _ctx.prop_map().get<std::string>(irods::RESOURCE_CONTEXT, context);
+        if (!context.empty()) {
+            size_t pos = context.find("write_chunk_size=");
+            if (pos != std::string::npos) {
+                size_t end = context.find(';', pos);
+                cfg.write_chunk_size = std::stoull(context.substr(pos + 17, end - (pos + 17)));
+            }
+            pos = context.find("read_chunk_size=");
+            if (pos != std::string::npos) {
+                size_t end = context.find(';', pos);
+                cfg.read_chunk_size = std::stoull(context.substr(pos + 16, end - (pos + 16)));
+            }
+        }
+
+        if (intent == "create" || intent == "write") {
+            cfg.initial_write_size = std::max(cfg.initial_write_size, cfg.write_chunk_size * 4);
+        } else if (intent == "read") {
+            cfg.initial_read_size = std::max(cfg.initial_read_size, cfg.read_chunk_size * 4);
+        }
 
         conv = conveyor_create(&cfg);
         if (!conv) return ERROR(SYS_INTERNAL_ERR, "conveyor: failed to create");
@@ -132,7 +162,12 @@ namespace {
     irods::error conveyor_file_open(irods::plugin_context& _ctx) {
         irods::resource_ptr child;
         if (auto err = conveyor_get_first_child_resc(_ctx, child); !err.ok()) return PASS(err);
-        return child->call(_ctx.comm(), irods::RESOURCE_OP_OPEN, _ctx.fco());
+        auto ret = child->call(_ctx.comm(), irods::RESOURCE_OP_OPEN, _ctx.fco());
+        if (ret.ok()) {
+            conveyor_t* conv = nullptr;
+            get_conveyor(_ctx, conv); // Proactively warm up threads and buffers
+        }
+        return ret;
     }
 
     irods::error conveyor_file_close(irods::plugin_context& _ctx) {
@@ -156,7 +191,12 @@ namespace {
     irods::error conveyor_file_create(irods::plugin_context& _ctx) {
         irods::resource_ptr child;
         if (auto err = conveyor_get_first_child_resc(_ctx, child); !err.ok()) return PASS(err);
-        return child->call(_ctx.comm(), irods::RESOURCE_OP_CREATE, _ctx.fco());
+        auto ret = child->call(_ctx.comm(), irods::RESOURCE_OP_CREATE, _ctx.fco());
+        if (ret.ok()) {
+            conveyor_t* conv = nullptr;
+            get_conveyor(_ctx, conv); // Proactively warm up threads and buffers
+        }
+        return ret;
     }
 
     irods::error conveyor_file_lseek(irods::plugin_context& _ctx, long long _offset, int _whence) {
@@ -267,6 +307,12 @@ namespace {
         std::string resc_name = irods::get_resource_name(_ctx);
         _parser->add_child(resc_name);
         
+        // --- PREDICTIVE HINTING ---
+        if (_op) {
+            auto fco = boost::dynamic_pointer_cast<irods::file_object>(_ctx.fco());
+            if (fco) fco->set_property<std::string>(CONVEYOR_INTENT_PROP, *_op);
+        }
+
         irods::resource_ptr child;
         if (!conveyor_get_first_child_resc(_ctx, child).ok()) { *_vote = 0.0f; return SUCCESS(); }
         

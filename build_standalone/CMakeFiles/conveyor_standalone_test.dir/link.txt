@@ -1,0 +1,1 @@
+/usr/bin/c++ -O3 -DNDEBUG CMakeFiles/conveyor_standalone_test.dir/test/standalone_test.cpp.o CMakeFiles/conveyor_standalone_test.dir/src/libconveyor_resource.cpp.o -o conveyor_standalone_test  _deps/libconveyor-build/libconveyor.a 
