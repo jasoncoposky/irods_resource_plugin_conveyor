@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC -shared  -o libirods_resource_plugin_conveyor.so CMakeFiles/irods_resource_plugin_conveyor.dir/src/libconveyor_resource.cpp.o  /usr/lib/libirods_common.so /usr/lib/x86_64-linux-gnu/libspdlog.so.1.12.0 /home/darkfell/dev/libconveyor/build/libconveyor.a /usr/lib/libirods_client.so -ldl -lpthread /usr/lib/x86_64-linux-gnu/libfmt.so.9.1.0 

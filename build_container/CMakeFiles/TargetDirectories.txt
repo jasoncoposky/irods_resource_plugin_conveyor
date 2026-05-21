@@ -1,0 +1,10 @@
+/irods_plugin_build/CMakeFiles/irods_resource_plugin_conveyor.dir
+/irods_plugin_build/CMakeFiles/run_tests.dir
+/irods_plugin_build/CMakeFiles/package.dir
+/irods_plugin_build/CMakeFiles/package_source.dir
+/irods_plugin_build/CMakeFiles/edit_cache.dir
+/irods_plugin_build/CMakeFiles/rebuild_cache.dir
+/irods_plugin_build/CMakeFiles/list_install_components.dir
+/irods_plugin_build/CMakeFiles/install.dir
+/irods_plugin_build/CMakeFiles/install/local.dir
+/irods_plugin_build/CMakeFiles/install/strip.dir

@@ -1,0 +1,2 @@
+/usr/lib/irods/plugins/resources/libirods_resource_plugin_conveyor.so
+/var/lib/irods/scripts/irods/test/test_irods_resource_plugin_conveyor.py

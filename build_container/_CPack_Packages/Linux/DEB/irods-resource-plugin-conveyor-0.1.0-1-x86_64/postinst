@@ -1,0 +1,14 @@
+#!/bin/bash -e
+
+# get the service account information
+if [ -f /etc/irods/service_account.config ]; then
+    # if it exists, use it
+    . /etc/irods/service_account.config
+else
+    # otherwise, use the owner of /var/lib/irods
+    IRODS_SERVICE_ACCOUNT_NAME=$(stat -c "%U" /var/lib/irods)
+    IRODS_SERVICE_GROUP_NAME=$(stat -c "%G" /var/lib/irods)
+fi
+
+# update ownership of scripts
+chown -R ${IRODS_SERVICE_ACCOUNT_NAME}:${IRODS_SERVICE_GROUP_NAME} /var/lib/irods/scripts/irods/test/test_irods_resource_plugin_conveyor.py

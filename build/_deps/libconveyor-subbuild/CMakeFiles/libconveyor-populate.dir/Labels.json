@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/CMakeFiles/libconveyor-populate"
+		},
+		{
+			"file" : "/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/CMakeFiles/libconveyor-populate.rule"
+		},
+		{
+			"file" : "/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/CMakeFiles/libconveyor-populate-complete.rule"
+		},
+		{
+			"file" : "/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-build.rule"
+		},
+		{
+			"file" : "/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-configure.rule"
+		},
+		{
+			"file" : "/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-download.rule"
+		},
+		{
+			"file" : "/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-install.rule"
+		},
+		{
+			"file" : "/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-mkdir.rule"
+		},
+		{
+			"file" : "/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-patch.rule"
+		},
+		{
+			"file" : "/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-test.rule"
+		},
+		{
+			"file" : "/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"libconveyor-populate"
+		],
+		"name" : "libconveyor-populate"
+	}
+}

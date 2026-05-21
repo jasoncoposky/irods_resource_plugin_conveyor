@@ -1,0 +1,2 @@
+4d2ffbc5e16bf3c7d632642ff04fe67e  usr/lib/irods/plugins/resources/libirods_resource_plugin_conveyor.so
+b47d2690ab9d72fd5300c84bb8722838  var/lib/irods/scripts/irods/test/test_irods_resource_plugin_conveyor.py

@@ -1,0 +1,3 @@
+/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/CMakeFiles/libconveyor-populate.dir
+/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/CMakeFiles/edit_cache.dir
+/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,256 @@
+#include <mutex>
+#include <map>
+#include <memory>
+#include <span>
+#include "libconveyor/conveyor_modern.hpp"
+
+#include <boost/pointer_cast.hpp>
+#include <boost/functional/hash.hpp> 
+
+#include "irods/irods_resource_plugin.hpp"
+#include "irods/irods_file_object.hpp"
+#include "irods/irods_hierarchy_parser.hpp"
+#include "irods/irods_resource_redirect.hpp"
+#include "irods/rodsErrorTable.h"
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <functional>
+
+namespace {
+    struct ConveyorEntry {
+        libconveyor::v2::Conveyor conveyor;
+        irods::file_object_ptr fco;
+        irods::resource_ptr child_resc;
+        rsComm_t* comm;
+        std::mutex comm_mutex;
+
+        ConveyorEntry(libconveyor::v2::Conveyor&& c, irods::file_object_ptr f, irods::resource_ptr r, rsComm_t* cm)
+            : conveyor(std::move(c)), fco(f), child_resc(r), comm(cm) {}
+    };
+
+    std::mutex conveyor_map_mutex;
+    std::map<int, std::unique_ptr<ConveyorEntry>> conveyor_map;
+
+    // Helper to get first child resource
+    irods::error get_first_child_resc(irods::plugin_property_map& _props, irods::resource_ptr& _resc) {
+        irods::resource_child_map* cmap_ref = nullptr;
+        if(auto err = _props.get< irods::resource_child_map* >(irods::RESC_CHILD_MAP_PROP, cmap_ref); !err.ok()) {
+            return PASSMSG("Failed to get child map", err);
+        }
+
+        if (!cmap_ref || cmap_ref->empty()) {
+            return ERROR(SYS_INVALID_INPUT_PARAM, "Conveyor resource has no children");
+        }
+
+        _resc = cmap_ref->begin()->second.second;
+        return SUCCESS();
+    }
+
+    ssize_t conveyor_pwrite_impl(storage_handle_t handle, const void* buf, size_t count, off_t offset)
+    {
+        int fd = reinterpret_cast<intptr_t>(handle);
+        try {
+            auto& entry = conveyor_map.at(fd);
+            std::lock_guard<std::mutex> lock(entry->comm_mutex);
+            ssize_t bytes_written = 0;
+            auto err = entry->child_resc->call(entry->comm, "pwrite", entry->fco, buf, count, offset, &bytes_written);
+            if (!err.ok()) { errno = err.code(); return -1; }
+            return bytes_written;
+        } catch (...) { errno = EBADF; return -1; }
+    }
+
+    ssize_t conveyor_pread_impl(storage_handle_t handle, void* buf, size_t count, off_t offset)
+    {
+        int fd = reinterpret_cast<intptr_t>(handle);
+        try {
+            auto& entry = conveyor_map.at(fd);
+            std::lock_guard<std::mutex> lock(entry->comm_mutex);
+            ssize_t bytes_read = 0;
+            auto err = entry->child_resc->call(entry->comm, "pread", entry->fco, buf, count, offset, &bytes_read);
+            if (!err.ok()) { errno = err.code(); return -1; }
+            return bytes_read;
+        } catch (...) { errno = EBADF; return -1; }
+    }
+
+    off_t conveyor_lseek_impl(storage_handle_t handle, off_t offset, int whence)
+    {
+        int fd = reinterpret_cast<intptr_t>(handle);
+        try {
+            auto& entry = conveyor_map.at(fd);
+            std::lock_guard<std::mutex> lock(entry->comm_mutex);
+            off_t new_offset = 0;
+            auto err = entry->child_resc->call(entry->comm, irods::RESOURCE_OP_LSEEK, entry->fco, offset, whence, &new_offset);
+            if (!err.ok()) { errno = err.code(); return -1; }
+            return new_offset;
+        } catch (...) { errno = EBADF; return -1; }
+    }
+
+    class conveyor_resource : public irods::resource {
+    public:
+        conveyor_resource(const std::string& _inst, const std::string& _ctx)
+            : irods::resource(_inst, _ctx)
+        {}
+    };
+}
+
+extern "C" {
+
+irods::error conveyor_file_open(irods::plugin_context& _ctx) {
+    irods::resource_ptr resc;
+    if (auto err = get_first_child_resc(_ctx.prop_map(), resc); !err.ok()) {
+        return PASSMSG("failed getting the first child resource pointer.", err);
+    }
+    auto fco = boost::dynamic_pointer_cast<irods::file_object>(_ctx.fco());
+    if (auto err = resc->call(_ctx.comm(), irods::RESOURCE_OP_OPEN, fco); !err.ok()) {
+        return PASSMSG("Failed to open file on child resource.", err);
+    }
+    int fd = fco->l1_desc_idx();
+    libconveyor::v2::Config cfg;
+    cfg.handle = reinterpret_cast<storage_handle_t>(static_cast<intptr_t>(fd));
+    cfg.ops = { conveyor_pwrite_impl, conveyor_pread_impl, conveyor_lseek_impl };
+    cfg.write_capacity = 1 * 1024 * 1024;
+    cfg.read_capacity = 1 * 1024 * 1024;
+    auto conveyor_result = libconveyor::v2::Conveyor::create(cfg);
+    if (!conveyor_result) {
+        resc->call(_ctx.comm(), irods::RESOURCE_OP_CLOSE, fco);
+        return ERROR(-1, "Failed to create conveyor: " + conveyor_result.error().message());
+    }
+    auto entry = std::make_unique<ConveyorEntry>(std::move(conveyor_result.value()), fco, resc, _ctx.comm());
+    {
+        std::lock_guard<std::mutex> lock(conveyor_map_mutex);
+        conveyor_map[fd] = std::move(entry);
+    }
+    return SUCCESS();
+}
+
+irods::error conveyor_file_close(irods::plugin_context& _ctx) {
+    auto fco = boost::dynamic_pointer_cast<irods::file_object>(_ctx.fco());
+    int fd = fco->l1_desc_idx();
+    {
+        std::lock_guard<std::mutex> lock(conveyor_map_mutex);
+        auto it = conveyor_map.find(fd);
+        if (it != conveyor_map.end()) {
+            it->second->conveyor.flush();
+            conveyor_map.erase(it);
+        }
+    }
+    irods::resource_ptr resc;
+    if (auto err = get_first_child_resc(_ctx.prop_map(), resc); !err.ok()) {
+        return PASSMSG("failed getting the first child resource pointer.", err);
+    }
+    return resc->call(_ctx.comm(), irods::RESOURCE_OP_CLOSE, fco);
+}
+
+irods::error conveyor_file_read(irods::plugin_context& _ctx, void* _buf, int _len, int* _bytes_read) {
+    auto fco = boost::dynamic_pointer_cast<irods::file_object>(_ctx.fco());
+    int fd = fco->l1_desc_idx();
+    try {
+        std::lock_guard<std::mutex> lock(conveyor_map_mutex);
+        auto& entry = conveyor_map.at(fd);
+        std::span<char> read_buffer(static_cast<char*>(_buf), _len);
+        auto result = entry->conveyor.read(read_buffer);
+        if (!result) return ERROR(result.error().value(), "Conveyor read failed");
+        *_bytes_read = result.value();
+        return SUCCESS();
+    } catch (...) { return ERROR(CAT_NO_ROWS_FOUND, "Conveyor not found for fd"); }
+}
+
+irods::error conveyor_file_write(irods::plugin_context& _ctx, const void* _buf, int _len, int* _bytes_written) {
+    auto fco = boost::dynamic_pointer_cast<irods::file_object>(_ctx.fco());
+    int fd = fco->l1_desc_idx();
+    try {
+        std::lock_guard<std::mutex> lock(conveyor_map_mutex);
+        auto& entry = conveyor_map.at(fd);
+        std::span<const char> write_buffer(static_cast<const char*>(_buf), _len);
+        auto result = entry->conveyor.write(write_buffer);
+        if (!result) return ERROR(result.error().value(), "Conveyor write failed");
+        *_bytes_written = result.value();
+        return SUCCESS();
+    } catch (...) { return ERROR(CAT_NO_ROWS_FOUND, "Conveyor not found for fd"); }
+}
+
+irods::error conveyor_file_lseek(irods::plugin_context& _ctx, long long _offset, int _whence, long long* _new_offset) {
+    auto fco = boost::dynamic_pointer_cast<irods::file_object>(_ctx.fco());
+    int fd = fco->l1_desc_idx();
+    try {
+        std::lock_guard<std::mutex> lock(conveyor_map_mutex);
+        auto& entry = conveyor_map.at(fd);
+        auto result = entry->conveyor.seek(_offset, _whence);
+        if (!result) return ERROR(result.error().value(), "Conveyor seek failed");
+        *_new_offset = result.value();
+        return SUCCESS();
+    } catch (...) { return ERROR(CAT_NO_ROWS_FOUND, "Conveyor not found for fd"); }
+}
+
+irods::error conveyor_resolve_hierarchy(
+    irods::plugin_context& _ctx,
+    const std::string* _op,
+    const std::string* _curr_host,
+    irods::hierarchy_parser* _parser,
+    float* _vote)
+{
+    if (!_op || !_curr_host || !_parser || !_vote) {
+        return ERROR(SYS_INVALID_INPUT_PARAM, "resolve_hierarchy - null parameter");
+    }
+
+    std::string resc_name;
+    if (auto err = _ctx.prop_map().get<std::string>(irods::RESOURCE_NAME, resc_name); !err.ok()) {
+        return PASSMSG("failed to get resource name", err);
+    }
+    _parser->add_child(resc_name);
+
+    irods::resource_ptr resc;
+    if (auto err = get_first_child_resc(_ctx.prop_map(), resc); !err.ok()) {
+        *_vote = 0.0f;
+        return SUCCESS();
+    }
+
+    return resc->call<const std::string*, const std::string*, irods::hierarchy_parser*, float*>(
+        _ctx.comm(), irods::RESOURCE_OP_RESOLVE_RESC_HIER, _ctx.fco(), _op, _curr_host, _parser, _vote);
+}
+
+irods::error conveyor_passthrough(irods::plugin_context& _ctx, const std::string& _op) {
+    irods::resource_ptr resc;
+    if (auto err = get_first_child_resc(_ctx.prop_map(), resc); !err.ok()) {
+        return SUCCESS();
+    }
+    return resc->call(_ctx.comm(), _op, _ctx.fco());
+}
+
+irods::error conveyor_file_stat(irods::plugin_context& _ctx, struct stat* _statbuf) {
+    irods::resource_ptr resc;
+    if (auto err = get_first_child_resc(_ctx.prop_map(), resc); !err.ok()) {
+        return PASSMSG("failed getting the first child resource pointer.", err);
+    }
+    return resc->call(_ctx.comm(), irods::RESOURCE_OP_STAT, _ctx.fco(), _statbuf);
+}
+
+irods::resource* plugin_factory(const std::string& _inst_name, const std::string& _context) {
+    conveyor_resource* resc = new conveyor_resource(_inst_name, _context);
+
+    using std::function;
+    using namespace irods;
+
+    resc->add_operation(RESOURCE_OP_CREATE, function<error(plugin_context&)>(conveyor_file_open));
+    resc->add_operation(RESOURCE_OP_OPEN,   function<error(plugin_context&)>(conveyor_file_open));
+    resc->add_operation(RESOURCE_OP_CLOSE,  function<error(plugin_context&)>(conveyor_file_close));
+    resc->add_operation(RESOURCE_OP_READ,   function<error(plugin_context&, void*, int, int*)>(conveyor_file_read));
+    resc->add_operation(RESOURCE_OP_WRITE,  function<error(plugin_context&, const void*, int, int*)>(conveyor_file_write));
+    resc->add_operation(RESOURCE_OP_LSEEK,  function<error(plugin_context&, long long, int, long long*)>(conveyor_file_lseek));
+    resc->add_operation(RESOURCE_OP_STAT,   function<error(plugin_context&, struct stat*)>(conveyor_file_stat));
+    resc->add_operation(RESOURCE_OP_RESOLVE_RESC_HIER, function<error(plugin_context&, const std::string*, const std::string*, hierarchy_parser*, float*)>(conveyor_resolve_hierarchy));
+
+    resc->add_operation(RESOURCE_OP_REGISTERED,   function<error(plugin_context&)>([=](plugin_context& _ctx) { return conveyor_passthrough(_ctx, RESOURCE_OP_REGISTERED); }));
+    resc->add_operation(RESOURCE_OP_UNREGISTERED, function<error(plugin_context&)>([=](plugin_context& _ctx) { return conveyor_passthrough(_ctx, RESOURCE_OP_UNREGISTERED); }));
+    resc->add_operation(RESOURCE_OP_MODIFIED,     function<error(plugin_context&)>([=](plugin_context& _ctx) { return conveyor_passthrough(_ctx, RESOURCE_OP_MODIFIED); }));
+    resc->add_operation(RESOURCE_OP_UNLINK,       function<error(plugin_context&)>([=](plugin_context& _ctx) { return conveyor_passthrough(_ctx, RESOURCE_OP_UNLINK); }));
+
+    resc->set_property<int>(RESOURCE_CHECK_PATH_PERM, 2);
+    resc->set_property<int>(RESOURCE_CREATE_PATH, 1);
+
+    return dynamic_cast<irods::resource*>(resc);
+}
+
+} // extern "C"

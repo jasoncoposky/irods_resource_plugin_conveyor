@@ -1,0 +1,10 @@
+Architecture: amd64
+Depends: irods-server (>= 4.3.0)
+Description: iRODS Conveyor Resource Plugin
+Maintainer: info@irods.org
+Package: irods-resource-plugin-conveyor
+Priority: optional
+Section: devel
+Version: 0.1.0
+Installed-Size: 1279
+
