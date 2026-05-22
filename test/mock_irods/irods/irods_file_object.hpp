@@ -5,12 +5,15 @@
 #include <map>
 #include <boost/any.hpp>
 #include <boost/shared_ptr.hpp>
+#include "irods_error.hpp"
 
 namespace irods {
     class first_class_object {
     public:
         virtual ~first_class_object() = default;
     };
+
+    typedef boost::shared_ptr<first_class_object> first_class_object_ptr;
 
     class file_object : public first_class_object {
         std::string physical_path_;
