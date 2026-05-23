@@ -11,6 +11,7 @@
 #include <memory>
 #include <atomic>
 #include <cstdarg>
+#include <chrono>
 
 #include <boost/container_hash/hash.hpp>
 
@@ -70,12 +71,23 @@ namespace {
         return ret.ok() ? (off_t)ret.code() : -1;
     }
 
+    irods::error check_conveyor_error(conveyor_t* _conv) {
+        conveyor_stats_t stats;
+        if (conveyor_get_stats(_conv, &stats) == 0 && stats.last_error_code != 0) {
+            return ERROR(FILE_WRITE_ERR, 
+                "conveyor: background I/O error occurred (errno: " + std::to_string(stats.last_error_code) + ")");
+        }
+        return SUCCESS();
+    }
+
     irods::error flush_if_needed(irods::plugin_context& _ctx) {
         auto fco = boost::dynamic_pointer_cast<irods::file_object>(_ctx.fco());
         if (!fco) return SUCCESS();
         conveyor_t* conv = nullptr;
         if (fco->get_property<conveyor_t*>(CONVEYOR_HANDLE_PROP, conv).ok()) {
-            conveyor_flush(conv);
+            if (conveyor_flush(conv) == LIBCONVEYOR_ERROR) {
+                return check_conveyor_error(conv);
+            }
         }
         return SUCCESS();
     }
@@ -88,11 +100,6 @@ namespace {
     static std::unordered_map<std::string, conveyor_info> g_conveyor_table;
     static std::shared_mutex g_conveyor_mutex;
 
-    // EXTREME HOT PATH: Thread-Local Cache for sequential operations
-    thread_local void* tl_last_fco = nullptr;
-    thread_local conveyor_t* tl_last_conv = nullptr;
-
-    // Helper to get first child resource
     irods::error conveyor_get_first_child_resc(irods::plugin_context& _ctx, irods::resource_ptr& _resc) {
         irods::resource_child_map* cmap_ref = nullptr;
         irods::error ret = _ctx.prop_map().get< irods::resource_child_map* >(irods::RESC_CHILD_MAP_PROP, cmap_ref);
@@ -103,20 +110,10 @@ namespace {
     }
 
 irods::error get_conveyor(irods::plugin_context& _ctx, conveyor_t*& conv) {
-    // --- EXTREME HOT PATH: Raw Pointer TL Cache ---
-    void* fco_ptr = _ctx.fco().get();
-    if (fco_ptr == tl_last_fco) {
-        conv = tl_last_conv;
-        return SUCCESS();
-    }
-
     auto fco = boost::dynamic_pointer_cast<irods::file_object>(_ctx.fco());
     if (!fco) return ERROR(SYS_INVALID_INPUT_PARAM, "conveyor: null fco");
 
-    // --- HOT PATH: FCO Property Cache ---
     if (fco->get_property<conveyor_t*>(CONVEYOR_HANDLE_PROP, conv).ok()) {
-        tl_last_fco = fco_ptr;
-        tl_last_conv = conv;
         return SUCCESS();
     }
 
@@ -129,8 +126,6 @@ irods::error get_conveyor(irods::plugin_context& _ctx, conveyor_t*& conv) {
         if (it != g_conveyor_table.end()) {
             conv = it->second.conv;
             fco->set_property<conveyor_t*>(CONVEYOR_HANDLE_PROP, conv); 
-            tl_last_fco = fco_ptr;
-            tl_last_conv = conv;
             return SUCCESS();
         }
     }
@@ -140,7 +135,6 @@ irods::error get_conveyor(irods::plugin_context& _ctx, conveyor_t*& conv) {
 
         auto* c_ctx = new conveyor_context{child, _ctx.fco(), _ctx.comm()};
 
-        // --- TUNING & PREDICTIVE SIZING ---
         std::string intent = ""; 
         fco->get_property<std::string>(CONVEYOR_INTENT_PROP, intent);
 
@@ -149,9 +143,8 @@ irods::error get_conveyor(irods::plugin_context& _ctx, conveyor_t*& conv) {
         cfg.flags = fco->flags();
         cfg.ops = { plugin_pwrite, plugin_pread, plugin_lseek };
         
-        // Base Sizing: 1GB warm buffers, 32MB chunks, 2GB max
-        cfg.initial_write_size = 1024LL * 1024LL * 1024LL;
-        cfg.initial_read_size = 1024LL * 1024LL * 1024LL;
+        cfg.initial_write_size = 64 * 1024 * 1024;
+        cfg.initial_read_size = 64 * 1024 * 1024;
         cfg.max_write_size = 2048LL * 1024LL * 1024LL;
         cfg.max_read_size = 2048LL * 1024LL * 1024LL;
         cfg.write_chunk_size = 32 * 1024 * 1024;
@@ -173,18 +166,25 @@ irods::error get_conveyor(irods::plugin_context& _ctx, conveyor_t*& conv) {
         }
 
         if (intent == "create" || intent == "write") {
-            cfg.initial_write_size = std::max(cfg.initial_write_size, cfg.write_chunk_size * 4);
+            cfg.initial_write_size = std::max(cfg.initial_write_size, cfg.write_chunk_size * 2);
         } else if (intent == "read") {
-            cfg.initial_read_size = std::max(cfg.initial_read_size, cfg.read_chunk_size * 4);
+            cfg.initial_read_size = std::max(cfg.initial_read_size, cfg.read_chunk_size * 2);
         }
 
         conv = conveyor_create(&cfg);
-        if (!conv) { delete c_ctx; return ERROR(SYS_INTERNAL_ERR, "conveyor: failed to create"); }
+        if (!conv) { 
+            delete c_ctx; 
+            return ERROR(SYS_INTERNAL_ERR, "conveyor: failed to create conveyor object"); 
+        }
 
         {
             std::unique_lock lock(g_conveyor_mutex);
             g_conveyor_table[p_path] = {conv, c_ctx};
         }
+        
+        fco->set_property<conveyor_t*>(CONVEYOR_HANDLE_PROP, conv);
+
+        log_resc::debug("conveyor: created for path [{}] with intent [{}]", p_path, intent);
         return SUCCESS();
     }
 
@@ -193,6 +193,8 @@ irods::error get_conveyor(irods::plugin_context& _ctx, conveyor_t*& conv) {
     irods::error conveyor_file_write(irods::plugin_context& _ctx, const void* _buf, int _len) {
         conveyor_t* conv = nullptr;
         if (auto err = get_conveyor(_ctx, conv); !err.ok()) return PASS(err);
+
+        if (auto err = check_conveyor_error(conv); !err.ok()) return PASS(err);
 
         ssize_t ret = conveyor_write(conv, _buf, (size_t)_len);
         if (ret == LIBCONVEYOR_ERROR) {
@@ -208,6 +210,8 @@ irods::error get_conveyor(irods::plugin_context& _ctx, conveyor_t*& conv) {
         conveyor_t* conv = nullptr;
         if (auto err = get_conveyor(_ctx, conv); !err.ok()) return PASS(err);
 
+        if (auto err = check_conveyor_error(conv); !err.ok()) return PASS(err);
+
         ssize_t ret = conveyor_read(conv, _buf, (size_t)_len);
         if (ret == LIBCONVEYOR_ERROR) {
             return ERROR(FILE_READ_ERR, "conveyor: read failed");
@@ -221,10 +225,11 @@ irods::error get_conveyor(irods::plugin_context& _ctx, conveyor_t*& conv) {
     irods::error conveyor_file_open(irods::plugin_context& _ctx) {
         irods::resource_ptr child;
         if (auto err = conveyor_get_first_child_resc(_ctx, child); !err.ok()) return PASS(err);
+        
         auto ret = child->call(_ctx.comm(), irods::RESOURCE_OP_OPEN, _ctx.fco());
         if (ret.ok()) {
             conveyor_t* conv = nullptr;
-            get_conveyor(_ctx, conv); // Proactively warm up threads and buffers
+            get_conveyor(_ctx, conv); 
         }
         return ret;
     }
@@ -233,10 +238,16 @@ irods::error get_conveyor(irods::plugin_context& _ctx, conveyor_t*& conv) {
         auto fco = boost::dynamic_pointer_cast<irods::file_object>(_ctx.fco());
         std::string p_path = fco->physical_path();
         
+        irods::error final_ret = SUCCESS();
+        
         {
             std::unique_lock lock(g_conveyor_mutex);
             auto it = g_conveyor_table.find(p_path);
             if (it != g_conveyor_table.end()) {
+                if (conveyor_flush(it->second.conv) == LIBCONVEYOR_ERROR) {
+                    final_ret = check_conveyor_error(it->second.conv);
+                }
+                
                 conveyor_destroy(it->second.conv);
                 delete it->second.ctx;
                 g_conveyor_table.erase(it);
@@ -245,16 +256,21 @@ irods::error get_conveyor(irods::plugin_context& _ctx, conveyor_t*& conv) {
 
         irods::resource_ptr child;
         if (auto err = conveyor_get_first_child_resc(_ctx, child); !err.ok()) return PASS(err);
-        return child->call(_ctx.comm(), irods::RESOURCE_OP_CLOSE, _ctx.fco());
+        
+        auto close_ret = child->call(_ctx.comm(), irods::RESOURCE_OP_CLOSE, _ctx.fco());
+        if (!close_ret.ok()) return close_ret;
+        
+        return final_ret;
     }
 
     irods::error conveyor_file_create(irods::plugin_context& _ctx) {
         irods::resource_ptr child;
         if (auto err = conveyor_get_first_child_resc(_ctx, child); !err.ok()) return PASS(err);
+        
         auto ret = child->call(_ctx.comm(), irods::RESOURCE_OP_CREATE, _ctx.fco());
         if (ret.ok()) {
             conveyor_t* conv = nullptr;
-            get_conveyor(_ctx, conv); // Proactively warm up threads and buffers
+            get_conveyor(_ctx, conv); 
         }
         return ret;
     }
@@ -272,14 +288,14 @@ irods::error get_conveyor(irods::plugin_context& _ctx, conveyor_t*& conv) {
     }
 
     irods::error conveyor_file_unlink(irods::plugin_context& _ctx) {
-        flush_if_needed(_ctx);
+        if (auto err = flush_if_needed(_ctx); !err.ok()) return PASS(err);
         irods::resource_ptr child;
         if (auto err = conveyor_get_first_child_resc(_ctx, child); !err.ok()) return PASS(err);
         return child->call(_ctx.comm(), irods::RESOURCE_OP_UNLINK, _ctx.fco());
     }
 
     irods::error conveyor_file_stat(irods::plugin_context& _ctx, struct stat* _statbuf) {
-        flush_if_needed(_ctx);
+        if (auto err = flush_if_needed(_ctx); !err.ok()) return PASS(err);
         irods::resource_ptr child;
         if (auto err = conveyor_get_first_child_resc(_ctx, child); !err.ok()) return PASS(err);
         return child->call<struct stat*>(_ctx.comm(), irods::RESOURCE_OP_STAT, _ctx.fco(), _statbuf);
@@ -316,14 +332,14 @@ irods::error get_conveyor(irods::plugin_context& _ctx, conveyor_t*& conv) {
     }
 
     irods::error conveyor_file_rename(irods::plugin_context& _ctx, const char* _new_file_name) {
-        flush_if_needed(_ctx);
+        if (auto err = flush_if_needed(_ctx); !err.ok()) return PASS(err);
         irods::resource_ptr child;
         if (auto err = conveyor_get_first_child_resc(_ctx, child); !err.ok()) return PASS(err);
         return child->call<const char*>(_ctx.comm(), irods::RESOURCE_OP_RENAME, _ctx.fco(), _new_file_name);
     }
 
     irods::error conveyor_file_truncate(irods::plugin_context& _ctx) {
-        flush_if_needed(_ctx);
+        if (auto err = flush_if_needed(_ctx); !err.ok()) return PASS(err);
         irods::resource_ptr child;
         if (auto err = conveyor_get_first_child_resc(_ctx, child); !err.ok()) return PASS(err);
         return child->call(_ctx.comm(), irods::RESOURCE_OP_TRUNCATE, _ctx.fco());
@@ -371,7 +387,6 @@ irods::error get_conveyor(irods::plugin_context& _ctx, conveyor_t*& conv) {
         std::string resc_name = irods::get_resource_name(_ctx);
         _parser->add_child(resc_name);
         
-        // --- PREDICTIVE HINTING ---
         if (_op) {
             auto fco = boost::dynamic_pointer_cast<irods::file_object>(_ctx.fco());
             if (fco) fco->set_property<std::string>(CONVEYOR_INTENT_PROP, *_op);

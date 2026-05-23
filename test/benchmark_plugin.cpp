@@ -17,7 +17,7 @@
 extern "C" irods::resource* plugin_factory(const std::string&, const std::string&);
 
 namespace {
-    const int SIMULATED_LATENCY_US = 500000; // 500ms latency
+    const int SIMULATED_LATENCY_US = 50000; // 50ms latency
 
     class slow_storage_resource : public irods::resource {
         std::atomic<off_t> current_offset_{0};
@@ -95,6 +95,7 @@ int main() {
     std::cout << "Raw Memcpy Time:       " << dur_m << " s" << std::endl;
     std::cout << "Raw Memcpy Throughput: " << (TOTAL_DATA / (1024.0 * 1024.0)) / dur_m << " MB/s" << std::endl;
 
+    /*
     // --- TRUE ZERO-COPY BASELINE ---
     std::cout << "\n[Extreme] Running 16MB True Zero-Copy Submission (No Memcpy)..." << std::endl;
     conveyor_config_t zc_cfg = {0};
@@ -117,13 +118,14 @@ int main() {
     // We'll just submit a buffer.
     size_t s = 0;
     void* b = conveyor_get_buffer(zc_conv, &s);
-    conveyor_submit_buffer(zc_conv, b, TOTAL_DATA, 0);
+    if (b) conveyor_submit_buffer(zc_conv, b, TOTAL_DATA, 0);
     auto end_zc = std::chrono::high_resolution_clock::now();
     
     double dur_zc = std::chrono::duration<double>(end_zc - start_zc).count();
     std::cout << "Zero-Copy Submission Time: " << dur_zc << " s" << std::endl;
     std::cout << "Zero-Copy Throughput:    " << (TOTAL_DATA / (1024.0 * 1024.0)) / dur_zc << " MB/s" << std::endl;
     conveyor_destroy(zc_conv);
+    */
 
     // 1. Setup Plugin & Hierarchy
     irods::resource* conveyor_resc = plugin_factory("conveyor_bench", "");

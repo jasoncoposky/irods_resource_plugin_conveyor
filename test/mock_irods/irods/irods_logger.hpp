@@ -2,13 +2,21 @@
 #define MOCK_IRODS_LOGGER_HPP
 
 #include <iostream>
+#include <string>
+#include <fmt/format.h>
 
 namespace irods {
     namespace experimental {
         namespace log {
             struct resource {
-                static constexpr int debug = 0;
-                static constexpr int error = 1;
+                template<typename... Args>
+                static void debug(const std::string& fmt, Args&&... args) {
+                    // std::cout << "[DEBUG] " << fmt::format(fmt, std::forward<Args>(args)...) << std::endl;
+                }
+                template<typename... Args>
+                static void error(const std::string& fmt, Args&&... args) {
+                    std::cerr << "[ERROR] " << fmt::format(fmt, std::forward<Args>(args)...) << std::endl;
+                }
             };
         }
     }
