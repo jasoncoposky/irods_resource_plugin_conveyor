@@ -8,8 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-src/src/ThreadPool.cpp" "_deps/libconveyor-build/CMakeFiles/conveyor.dir/src/ThreadPool.cpp.o" "gcc" "_deps/libconveyor-build/CMakeFiles/conveyor.dir/src/ThreadPool.cpp.o.d"
-  "/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-src/src/conveyor.cpp" "_deps/libconveyor-build/CMakeFiles/conveyor.dir/src/conveyor.cpp.o" "gcc" "_deps/libconveyor-build/CMakeFiles/conveyor.dir/src/conveyor.cpp.o.d"
+  "/home/darkfell/dev/libconveyor/src/ThreadPool.cpp" "_deps/libconveyor-build/CMakeFiles/conveyor.dir/src/ThreadPool.cpp.o" "gcc" "_deps/libconveyor-build/CMakeFiles/conveyor.dir/src/ThreadPool.cpp.o.d"
+  "/home/darkfell/dev/libconveyor/src/conveyor.cpp" "_deps/libconveyor-build/CMakeFiles/conveyor.dir/src/conveyor.cpp.o" "gcc" "_deps/libconveyor-build/CMakeFiles/conveyor.dir/src/conveyor.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

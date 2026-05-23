@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-src/include -I/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/concurrentqueue-src -I/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/citor-src/single_include -I/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/citor-src/include
+CXX_INCLUDES = -I/home/darkfell/dev/libconveyor/include -I/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/concurrentqueue-src -I/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/citor-src/single_include -I/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/citor-src/include
 
 CXX_FLAGS = -O3 -DNDEBUG -std=gnu++20 -fPIC
 

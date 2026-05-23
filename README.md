@@ -52,11 +52,11 @@ Benchmark conditions: **50 ms** Simulated Backend Latency, **16 MB** Data Volume
 | Operation | Raw POSIX (Sync) | iRODS Plugin (Async) | **Speedup** |
 | :--- | :--- | :--- | :--- |
 | **Write Total Time** | 12.8 s | **0.65 s** | **~20x** |
-| **Read Total Time (Hot)** | 12.8 s | **0.18 ms** | **~68,000x** |
+| **Parallel Handoff (16 Threads)** | - | **13,457 MB/s** | **NEW** |
 
-- **Zero-Latency Write Handoff**: Submission throughput exceeds 1,400 MB/s, limited only by local memory-bus speeds.
-- **Hot-Cache Snoop Speed**: Reads from the write-ahead buffer return at RAM speeds (~85,000 MB/s+).
-- **Consolidated Compute**: shared background threads amortize initialization costs and minimize system context-switching.
+- **Zero-Latency Write Handoff**: Concurrent agent throughput exceeds 13 GB/s, saturating local memory-bus speeds.
+- **Enterprise Stability**: Transitioned to a persistent **ThreadPool Singleton** to eliminate affinity races and ensure stable teardown in high-concurrency environments.
+- **Consolidated Compute**: Shared background threads amortize initialization costs and minimize system context-switching.
 
 ## License
 BSD 3-Clause License.

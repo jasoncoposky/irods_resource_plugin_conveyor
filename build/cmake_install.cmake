@@ -2,7 +2,7 @@
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/")
+  set(CMAKE_INSTALL_PREFIX "/usr/local")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -45,42 +45,6 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
   include("/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-build/cmake_install.cmake")
-endif()
-
-if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  if(EXISTS "$ENV{DESTDIR}/usr/lib/irods/plugins/resources/libirods_resource_plugin_conveyor.so" AND
-     NOT IS_SYMLINK "$ENV{DESTDIR}/usr/lib/irods/plugins/resources/libirods_resource_plugin_conveyor.so")
-    file(RPATH_CHECK
-         FILE "$ENV{DESTDIR}/usr/lib/irods/plugins/resources/libirods_resource_plugin_conveyor.so"
-         RPATH "")
-  endif()
-  list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/usr/lib/irods/plugins/resources/libirods_resource_plugin_conveyor.so")
-  if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
-    message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
-  endif()
-  if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
-    message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
-  endif()
-  file(INSTALL DESTINATION "/usr/lib/irods/plugins/resources" TYPE MODULE FILES "/home/darkfell/dev/irods_resource_plugin_conveyor/build/libirods_resource_plugin_conveyor.so")
-  if(EXISTS "$ENV{DESTDIR}/usr/lib/irods/plugins/resources/libirods_resource_plugin_conveyor.so" AND
-     NOT IS_SYMLINK "$ENV{DESTDIR}/usr/lib/irods/plugins/resources/libirods_resource_plugin_conveyor.so")
-    if(CMAKE_INSTALL_DO_STRIP)
-      execute_process(COMMAND "/usr/bin/strip" "$ENV{DESTDIR}/usr/lib/irods/plugins/resources/libirods_resource_plugin_conveyor.so")
-    endif()
-  endif()
-endif()
-
-if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/var/lib/irods/scripts/irods/test/test_irods_resource_plugin_conveyor.py")
-  if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
-    message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
-  endif()
-  if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
-    message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
-  endif()
-  file(INSTALL DESTINATION "/var/lib/irods/scripts/irods/test" TYPE FILE PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ FILES "/home/darkfell/dev/irods_resource_plugin_conveyor/packaging/test_irods_resource_plugin_conveyor.py")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)

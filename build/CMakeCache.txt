@@ -14,6 +14,12 @@
 # EXTERNAL cache entries
 ########################
 
+//The directory containing a CMake configuration file for Boost.
+Boost_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/Boost-1.83.0
+
+//Path to a file.
+Boost_INCLUDE_DIR:PATH=/usr/include
+
 //Build the comparative bench
 CITOR_BUILD_BENCHMARK:BOOL=OFF
 
@@ -388,6 +394,12 @@ IRODS_COMMON_LIB:FILEPATH=/usr/lib/libirods_common.so
 //Path to a file.
 IRODS_INCLUDE_DIR:PATH=/usr/include
 
+//No help, variable specified on the command line.
+STANDALONE_TEST:UNINITIALIZED=ON
+
+//The directory containing a CMake configuration file for boost_headers.
+boost_headers_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/boost_headers-1.83.0
+
 //Value Computed by CMake
 citor_BINARY_DIR:STATIC=/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/citor-build
 
@@ -425,7 +437,7 @@ libconveyor_BINARY_DIR:STATIC=/home/darkfell/dev/irods_resource_plugin_conveyor/
 libconveyor_IS_TOP_LEVEL:STATIC=OFF
 
 //Value Computed by CMake
-libconveyor_SOURCE_DIR:STATIC=/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-src
+libconveyor_SOURCE_DIR:STATIC=/home/darkfell/dev/libconveyor
 
 //The directory containing a CMake configuration file for spdlog.
 spdlog_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/spdlog
@@ -435,6 +447,8 @@ spdlog_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/spdlog
 # INTERNAL cache entries
 ########################
 
+//ADVANCED property for variable: Boost_DIR
+Boost_DIR-ADVANCED:INTERNAL=1
 //Test CITOR_HAS_MAVX2
 CITOR_HAS_MAVX2:INTERNAL=1
 //ADVANCED property for variable: CMAKE_ADDR2LINE
@@ -639,6 +653,8 @@ CPM_MODULE_PATH:INTERNAL=/home/darkfell/dev/irods_resource_plugin_conveyor/build
 CPM_PACKAGES:INTERNAL=
 CPM_PACKAGE_LOCK_FILE:INTERNAL=/home/darkfell/dev/irods_resource_plugin_conveyor/build/cpm-package-lock.cmake
 CPM_VERSION:INTERNAL=0.38.6
+//Details about finding Boost
+FIND_PACKAGE_MESSAGE_DETAILS_Boost:INTERNAL=[/usr/lib/x86_64-linux-gnu/cmake/Boost-1.83.0/BoostConfig.cmake][c ][v1.83.0()]
 //Details about finding IRODS
 FIND_PACKAGE_MESSAGE_DETAILS_IRODS:INTERNAL=[/usr/include][/usr/lib/libirods_common.so][/usr/lib/libirods_client.so][v..()]
 //Details about finding Threads
@@ -649,4 +665,6 @@ GIT_EXECUTABLE-ADVANCED:INTERNAL=1
 _CMAKE_LINKER_PUSHPOP_STATE_SUPPORTED:INTERNAL=TRUE
 //CMAKE_INSTALL_PREFIX during last run
 _GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX:INTERNAL=/usr/local
+//ADVANCED property for variable: boost_headers_DIR
+boost_headers_DIR-ADVANCED:INTERNAL=1
 

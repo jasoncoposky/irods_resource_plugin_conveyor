@@ -50,7 +50,7 @@ unset(_cmake_expected_targets)
 add_library(libconveyor::conveyor STATIC IMPORTED)
 
 set_target_properties(libconveyor::conveyor PROPERTIES
-  INTERFACE_INCLUDE_DIRECTORIES "/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-src/include;/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/concurrentqueue-src;/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/citor-src/single_include;/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/citor-src/include"
+  INTERFACE_INCLUDE_DIRECTORIES "/home/darkfell/dev/libconveyor/include;/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/concurrentqueue-src;/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/citor-src/single_include;/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/citor-src/include"
 )
 
 # Import target "libconveyor::conveyor" for configuration "Release"

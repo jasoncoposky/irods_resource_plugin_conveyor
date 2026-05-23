@@ -82,9 +82,6 @@ CMakeFiles/libconveyor-populate-complete: libconveyor-populate-prefix/src/libcon
 	/usr/bin/cmake -E touch /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/CMakeFiles/libconveyor-populate-complete
 	/usr/bin/cmake -E touch /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-done
 
-libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-update:
-.PHONY : libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-update
-
 libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-build: libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-configure
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "No build step for 'libconveyor-populate'"
 	cd /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-build && /usr/bin/cmake -E echo_append
@@ -96,11 +93,11 @@ libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-
 	cd /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-build && /usr/bin/cmake -E echo_append
 	cd /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-build && /usr/bin/cmake -E touch /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-configure
 
-libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-download: libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-gitinfo.txt
+libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-download: libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-source_dirinfo.txt
 libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-download: libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-mkdir
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Performing download step (git clone) for 'libconveyor-populate'"
-	cd /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps && /usr/bin/cmake -P /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/libconveyor-populate-prefix/tmp/libconveyor-populate-gitclone.cmake
-	cd /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps && /usr/bin/cmake -E touch /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-download
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "No download step for 'libconveyor-populate'"
+	/usr/bin/cmake -E echo_append
+	/usr/bin/cmake -E touch /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-download
 
 libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-install: libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-build
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "No install step for 'libconveyor-populate'"
@@ -118,19 +115,16 @@ libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-
 	/usr/bin/cmake -E echo_append
 	/usr/bin/cmake -E touch /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-patch
 
-libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-update:
-.PHONY : libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-update
-
 libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-test: libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-install
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "No test step for 'libconveyor-populate'"
 	cd /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-build && /usr/bin/cmake -E echo_append
 	cd /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-build && /usr/bin/cmake -E touch /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-test
 
-libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-update: libconveyor-populate-prefix/tmp/libconveyor-populate-gitupdate.cmake
 libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-update: libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-update-info.txt
 libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-update: libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-download
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Performing update step for 'libconveyor-populate'"
-	cd /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-src && /usr/bin/cmake -Dcan_fetch=YES -P /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/libconveyor-populate-prefix/tmp/libconveyor-populate-gitupdate.cmake
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "No update step for 'libconveyor-populate'"
+	/usr/bin/cmake -E echo_append
+	/usr/bin/cmake -E touch /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-update
 
 libconveyor-populate: CMakeFiles/libconveyor-populate
 libconveyor-populate: CMakeFiles/libconveyor-populate-complete

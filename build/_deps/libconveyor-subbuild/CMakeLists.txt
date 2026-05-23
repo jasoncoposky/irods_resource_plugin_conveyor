@@ -16,19 +16,11 @@ unset(ENV{CMAKE_TOOLCHAIN_FILE})
 project(libconveyor-populate NONE)
 
 
-# Pass through things we've already detected in the main project to avoid
-# paying the cost of redetecting them again in ExternalProject_Add()
-set(GIT_EXECUTABLE [==[/usr/bin/git]==])
-set(GIT_VERSION_STRING [==[2.43.0]==])
-set_property(GLOBAL PROPERTY _CMAKE_FindGit_GIT_EXECUTABLE_VERSION
-  [==[/usr/bin/git;2.43.0]==]
-)
-
 
 include(ExternalProject)
 ExternalProject_Add(libconveyor-populate
-                     "UPDATE_DISCONNECTED" "False" "GIT_REPOSITORY" "https://github.com/jasoncoposky/libconveyor.git" "EXTERNALPROJECT_INTERNAL_ARGUMENT_SEPARATOR" "GIT_TAG" "main"
-                    SOURCE_DIR          "/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-src"
+                     "UPDATE_DISCONNECTED" "False" "EXTERNALPROJECT_INTERNAL_ARGUMENT_SEPARATOR"
+                    SOURCE_DIR          "/home/darkfell/dev/irods_resource_plugin_conveyor/../libconveyor"
                     BINARY_DIR          "/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-build"
                     CONFIGURE_COMMAND   ""
                     BUILD_COMMAND       ""

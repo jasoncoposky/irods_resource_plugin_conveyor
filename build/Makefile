@@ -182,17 +182,30 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named irods_resource_plugin_conveyor
+# Target rules for targets named conveyor_standalone_test
 
 # Build rule for target.
-irods_resource_plugin_conveyor: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 irods_resource_plugin_conveyor
-.PHONY : irods_resource_plugin_conveyor
+conveyor_standalone_test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 conveyor_standalone_test
+.PHONY : conveyor_standalone_test
 
 # fast build rule for target.
-irods_resource_plugin_conveyor/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/irods_resource_plugin_conveyor.dir/build.make CMakeFiles/irods_resource_plugin_conveyor.dir/build
-.PHONY : irods_resource_plugin_conveyor/fast
+conveyor_standalone_test/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/conveyor_standalone_test.dir/build.make CMakeFiles/conveyor_standalone_test.dir/build
+.PHONY : conveyor_standalone_test/fast
+
+#=============================================================================
+# Target rules for targets named conveyor_parallel_plugin_benchmark
+
+# Build rule for target.
+conveyor_parallel_plugin_benchmark: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 conveyor_parallel_plugin_benchmark
+.PHONY : conveyor_parallel_plugin_benchmark
+
+# fast build rule for target.
+conveyor_parallel_plugin_benchmark/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/conveyor_parallel_plugin_benchmark.dir/build.make CMakeFiles/conveyor_parallel_plugin_benchmark.dir/build
+.PHONY : conveyor_parallel_plugin_benchmark/fast
 
 #=============================================================================
 # Target rules for targets named run_tests
@@ -225,7 +238,8 @@ src/libconveyor_resource.o: src/libconveyor_resource.cpp.o
 
 # target to build an object file
 src/libconveyor_resource.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/irods_resource_plugin_conveyor.dir/build.make CMakeFiles/irods_resource_plugin_conveyor.dir/src/libconveyor_resource.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/conveyor_standalone_test.dir/build.make CMakeFiles/conveyor_standalone_test.dir/src/libconveyor_resource.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/conveyor_parallel_plugin_benchmark.dir/build.make CMakeFiles/conveyor_parallel_plugin_benchmark.dir/src/libconveyor_resource.cpp.o
 .PHONY : src/libconveyor_resource.cpp.o
 
 src/libconveyor_resource.i: src/libconveyor_resource.cpp.i
@@ -233,7 +247,8 @@ src/libconveyor_resource.i: src/libconveyor_resource.cpp.i
 
 # target to preprocess a source file
 src/libconveyor_resource.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/irods_resource_plugin_conveyor.dir/build.make CMakeFiles/irods_resource_plugin_conveyor.dir/src/libconveyor_resource.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/conveyor_standalone_test.dir/build.make CMakeFiles/conveyor_standalone_test.dir/src/libconveyor_resource.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/conveyor_parallel_plugin_benchmark.dir/build.make CMakeFiles/conveyor_parallel_plugin_benchmark.dir/src/libconveyor_resource.cpp.i
 .PHONY : src/libconveyor_resource.cpp.i
 
 src/libconveyor_resource.s: src/libconveyor_resource.cpp.s
@@ -241,8 +256,57 @@ src/libconveyor_resource.s: src/libconveyor_resource.cpp.s
 
 # target to generate assembly for a file
 src/libconveyor_resource.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/irods_resource_plugin_conveyor.dir/build.make CMakeFiles/irods_resource_plugin_conveyor.dir/src/libconveyor_resource.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/conveyor_standalone_test.dir/build.make CMakeFiles/conveyor_standalone_test.dir/src/libconveyor_resource.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/conveyor_parallel_plugin_benchmark.dir/build.make CMakeFiles/conveyor_parallel_plugin_benchmark.dir/src/libconveyor_resource.cpp.s
 .PHONY : src/libconveyor_resource.cpp.s
+
+test/benchmark_parallel_plugin.o: test/benchmark_parallel_plugin.cpp.o
+.PHONY : test/benchmark_parallel_plugin.o
+
+# target to build an object file
+test/benchmark_parallel_plugin.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/conveyor_parallel_plugin_benchmark.dir/build.make CMakeFiles/conveyor_parallel_plugin_benchmark.dir/test/benchmark_parallel_plugin.cpp.o
+.PHONY : test/benchmark_parallel_plugin.cpp.o
+
+test/benchmark_parallel_plugin.i: test/benchmark_parallel_plugin.cpp.i
+.PHONY : test/benchmark_parallel_plugin.i
+
+# target to preprocess a source file
+test/benchmark_parallel_plugin.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/conveyor_parallel_plugin_benchmark.dir/build.make CMakeFiles/conveyor_parallel_plugin_benchmark.dir/test/benchmark_parallel_plugin.cpp.i
+.PHONY : test/benchmark_parallel_plugin.cpp.i
+
+test/benchmark_parallel_plugin.s: test/benchmark_parallel_plugin.cpp.s
+.PHONY : test/benchmark_parallel_plugin.s
+
+# target to generate assembly for a file
+test/benchmark_parallel_plugin.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/conveyor_parallel_plugin_benchmark.dir/build.make CMakeFiles/conveyor_parallel_plugin_benchmark.dir/test/benchmark_parallel_plugin.cpp.s
+.PHONY : test/benchmark_parallel_plugin.cpp.s
+
+test/standalone_test.o: test/standalone_test.cpp.o
+.PHONY : test/standalone_test.o
+
+# target to build an object file
+test/standalone_test.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/conveyor_standalone_test.dir/build.make CMakeFiles/conveyor_standalone_test.dir/test/standalone_test.cpp.o
+.PHONY : test/standalone_test.cpp.o
+
+test/standalone_test.i: test/standalone_test.cpp.i
+.PHONY : test/standalone_test.i
+
+# target to preprocess a source file
+test/standalone_test.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/conveyor_standalone_test.dir/build.make CMakeFiles/conveyor_standalone_test.dir/test/standalone_test.cpp.i
+.PHONY : test/standalone_test.cpp.i
+
+test/standalone_test.s: test/standalone_test.cpp.s
+.PHONY : test/standalone_test.s
+
+# target to generate assembly for a file
+test/standalone_test.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/conveyor_standalone_test.dir/build.make CMakeFiles/conveyor_standalone_test.dir/test/standalone_test.cpp.s
+.PHONY : test/standalone_test.cpp.s
 
 # Help Target
 help:
@@ -260,10 +324,17 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... run_tests"
 	@echo "... conveyor"
-	@echo "... irods_resource_plugin_conveyor"
+	@echo "... conveyor_parallel_plugin_benchmark"
+	@echo "... conveyor_standalone_test"
 	@echo "... src/libconveyor_resource.o"
 	@echo "... src/libconveyor_resource.i"
 	@echo "... src/libconveyor_resource.s"
+	@echo "... test/benchmark_parallel_plugin.o"
+	@echo "... test/benchmark_parallel_plugin.i"
+	@echo "... test/benchmark_parallel_plugin.s"
+	@echo "... test/standalone_test.o"
+	@echo "... test/standalone_test.i"
+	@echo "... test/standalone_test.s"
 .PHONY : help
 
 

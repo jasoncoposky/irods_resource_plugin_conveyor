@@ -10,10 +10,8 @@ set(CMAKE_MAKEFILE_DEPENDS
   "CMakeFiles/3.28.3/CMakeSystem.cmake"
   "CMakeLists.txt"
   "libconveyor-populate-prefix/tmp/libconveyor-populate-mkdirs.cmake"
-  "/usr/share/cmake-3.28/Modules/CMakeDetermineSystem.cmake"
   "/usr/share/cmake-3.28/Modules/CMakeGenericSystem.cmake"
   "/usr/share/cmake-3.28/Modules/CMakeInitializeConfigs.cmake"
-  "/usr/share/cmake-3.28/Modules/CMakeSystem.cmake.in"
   "/usr/share/cmake-3.28/Modules/CMakeSystemSpecificInformation.cmake"
   "/usr/share/cmake-3.28/Modules/CMakeSystemSpecificInitialize.cmake"
   "/usr/share/cmake-3.28/Modules/ExternalProject.cmake"
@@ -21,8 +19,6 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/usr/share/cmake-3.28/Modules/ExternalProject/RepositoryInfo.txt.in"
   "/usr/share/cmake-3.28/Modules/ExternalProject/UpdateInfo.txt.in"
   "/usr/share/cmake-3.28/Modules/ExternalProject/cfgcmd.txt.in"
-  "/usr/share/cmake-3.28/Modules/ExternalProject/gitclone.cmake.in"
-  "/usr/share/cmake-3.28/Modules/ExternalProject/gitupdate.cmake.in"
   "/usr/share/cmake-3.28/Modules/ExternalProject/mkdirs.cmake.in"
   "/usr/share/cmake-3.28/Modules/ExternalProject/shared_internal_commands.cmake"
   "/usr/share/cmake-3.28/Modules/Platform/Linux-Initialize.cmake"
@@ -38,11 +34,8 @@ set(CMAKE_MAKEFILE_OUTPUTS
 
 # Byproducts of CMake generate step:
 set(CMAKE_MAKEFILE_PRODUCTS
-  "CMakeFiles/3.28.3/CMakeSystem.cmake"
   "libconveyor-populate-prefix/tmp/libconveyor-populate-mkdirs.cmake"
-  "libconveyor-populate-prefix/tmp/libconveyor-populate-gitclone.cmake"
-  "libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-gitinfo.txt"
-  "libconveyor-populate-prefix/tmp/libconveyor-populate-gitupdate.cmake"
+  "libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-source_dirinfo.txt"
   "libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-update-info.txt"
   "libconveyor-populate-prefix/src/libconveyor-populate-stamp/libconveyor-populate-patch-info.txt"
   "libconveyor-populate-prefix/tmp/libconveyor-populate-cfgcmd.txt"

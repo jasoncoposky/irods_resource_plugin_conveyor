@@ -63,7 +63,8 @@ CMAKE_BINARY_DIR = /home/darkfell/dev/irods_resource_plugin_conveyor/build
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/irods_resource_plugin_conveyor.dir/all
+all: CMakeFiles/conveyor_standalone_test.dir/all
+all: CMakeFiles/conveyor_parallel_plugin_benchmark.dir/all
 all: _deps/libconveyor-build/all
 .PHONY : all
 
@@ -72,7 +73,8 @@ preinstall: _deps/libconveyor-build/preinstall
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/irods_resource_plugin_conveyor.dir/clean
+clean: CMakeFiles/conveyor_standalone_test.dir/clean
+clean: CMakeFiles/conveyor_parallel_plugin_benchmark.dir/clean
 clean: CMakeFiles/run_tests.dir/clean
 clean: _deps/libconveyor-build/clean
 .PHONY : clean
@@ -128,30 +130,56 @@ _deps/libconveyor-build/clean: _deps/concurrentqueue-build/clean
 .PHONY : _deps/libconveyor-build/clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/irods_resource_plugin_conveyor.dir
+# Target rules for target CMakeFiles/conveyor_standalone_test.dir
 
 # All Build rule for target.
-CMakeFiles/irods_resource_plugin_conveyor.dir/all: _deps/libconveyor-build/CMakeFiles/conveyor.dir/all
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/irods_resource_plugin_conveyor.dir/build.make CMakeFiles/irods_resource_plugin_conveyor.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/irods_resource_plugin_conveyor.dir/build.make CMakeFiles/irods_resource_plugin_conveyor.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/darkfell/dev/irods_resource_plugin_conveyor/build/CMakeFiles --progress-num=4,5 "Built target irods_resource_plugin_conveyor"
-.PHONY : CMakeFiles/irods_resource_plugin_conveyor.dir/all
+CMakeFiles/conveyor_standalone_test.dir/all: _deps/libconveyor-build/CMakeFiles/conveyor.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/conveyor_standalone_test.dir/build.make CMakeFiles/conveyor_standalone_test.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/conveyor_standalone_test.dir/build.make CMakeFiles/conveyor_standalone_test.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/darkfell/dev/irods_resource_plugin_conveyor/build/CMakeFiles --progress-num=7,8,9 "Built target conveyor_standalone_test"
+.PHONY : CMakeFiles/conveyor_standalone_test.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/irods_resource_plugin_conveyor.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/darkfell/dev/irods_resource_plugin_conveyor/build/CMakeFiles 5
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/irods_resource_plugin_conveyor.dir/all
+CMakeFiles/conveyor_standalone_test.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/darkfell/dev/irods_resource_plugin_conveyor/build/CMakeFiles 6
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/conveyor_standalone_test.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/darkfell/dev/irods_resource_plugin_conveyor/build/CMakeFiles 0
-.PHONY : CMakeFiles/irods_resource_plugin_conveyor.dir/rule
+.PHONY : CMakeFiles/conveyor_standalone_test.dir/rule
 
 # Convenience name for target.
-irods_resource_plugin_conveyor: CMakeFiles/irods_resource_plugin_conveyor.dir/rule
-.PHONY : irods_resource_plugin_conveyor
+conveyor_standalone_test: CMakeFiles/conveyor_standalone_test.dir/rule
+.PHONY : conveyor_standalone_test
 
 # clean rule for target.
-CMakeFiles/irods_resource_plugin_conveyor.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/irods_resource_plugin_conveyor.dir/build.make CMakeFiles/irods_resource_plugin_conveyor.dir/clean
-.PHONY : CMakeFiles/irods_resource_plugin_conveyor.dir/clean
+CMakeFiles/conveyor_standalone_test.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/conveyor_standalone_test.dir/build.make CMakeFiles/conveyor_standalone_test.dir/clean
+.PHONY : CMakeFiles/conveyor_standalone_test.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/conveyor_parallel_plugin_benchmark.dir
+
+# All Build rule for target.
+CMakeFiles/conveyor_parallel_plugin_benchmark.dir/all: _deps/libconveyor-build/CMakeFiles/conveyor.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/conveyor_parallel_plugin_benchmark.dir/build.make CMakeFiles/conveyor_parallel_plugin_benchmark.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/conveyor_parallel_plugin_benchmark.dir/build.make CMakeFiles/conveyor_parallel_plugin_benchmark.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/darkfell/dev/irods_resource_plugin_conveyor/build/CMakeFiles --progress-num=4,5,6 "Built target conveyor_parallel_plugin_benchmark"
+.PHONY : CMakeFiles/conveyor_parallel_plugin_benchmark.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/conveyor_parallel_plugin_benchmark.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/darkfell/dev/irods_resource_plugin_conveyor/build/CMakeFiles 6
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/conveyor_parallel_plugin_benchmark.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/darkfell/dev/irods_resource_plugin_conveyor/build/CMakeFiles 0
+.PHONY : CMakeFiles/conveyor_parallel_plugin_benchmark.dir/rule
+
+# Convenience name for target.
+conveyor_parallel_plugin_benchmark: CMakeFiles/conveyor_parallel_plugin_benchmark.dir/rule
+.PHONY : conveyor_parallel_plugin_benchmark
+
+# clean rule for target.
+CMakeFiles/conveyor_parallel_plugin_benchmark.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/conveyor_parallel_plugin_benchmark.dir/build.make CMakeFiles/conveyor_parallel_plugin_benchmark.dir/clean
+.PHONY : CMakeFiles/conveyor_parallel_plugin_benchmark.dir/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/run_tests.dir
@@ -160,7 +188,7 @@ CMakeFiles/irods_resource_plugin_conveyor.dir/clean:
 CMakeFiles/run_tests.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/darkfell/dev/irods_resource_plugin_conveyor/build/CMakeFiles --progress-num=6 "Built target run_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/darkfell/dev/irods_resource_plugin_conveyor/build/CMakeFiles --progress-num=10 "Built target run_tests"
 .PHONY : CMakeFiles/run_tests.dir/all
 
 # Build rule for subdir invocation for target.

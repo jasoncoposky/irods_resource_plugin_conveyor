@@ -1,7 +1,7 @@
 _deps/libconveyor-build/CMakeFiles/conveyor.dir/src/ThreadPool.cpp.o: \
- /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-src/src/ThreadPool.cpp \
+ /home/darkfell/dev/libconveyor/src/ThreadPool.cpp \
  /usr/include/stdc-predef.h \
- /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-src/include/libconveyor/detail/ThreadPool.hpp \
+ /home/darkfell/dev/libconveyor/include/libconveyor/detail/ThreadPool.hpp \
  /usr/include/c++/13/functional \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/os_defines.h \

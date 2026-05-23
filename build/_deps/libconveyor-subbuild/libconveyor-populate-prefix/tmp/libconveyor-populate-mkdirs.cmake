@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 3.5)
 
 file(MAKE_DIRECTORY
-  "/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-src"
+  "/home/darkfell/dev/irods_resource_plugin_conveyor/../libconveyor"
   "/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-build"
   "/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/libconveyor-populate-prefix"
   "/home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-subbuild/libconveyor-populate-prefix/tmp"

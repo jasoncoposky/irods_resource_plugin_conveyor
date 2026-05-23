@@ -19,8 +19,7 @@ endif()
 include(FetchContent)
 FetchContent_Declare(
   libconveyor
-  GIT_REPOSITORY https://github.com/jasoncoposky/libconveyor.git
-  GIT_TAG        main
+  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../libconveyor
 )
 FetchContent_MakeAvailable(libconveyor)
 
@@ -38,14 +37,14 @@ if(STANDALONE_TEST)
         Boost::boost
     )
 
-    add_executable(conveyor_plugin_benchmark test/benchmark_plugin.cpp src/libconveyor_resource.cpp)
-    target_compile_definitions(conveyor_plugin_benchmark PRIVATE STANDALONE_MODE)
-    target_include_directories(conveyor_plugin_benchmark PRIVATE
+    add_executable(conveyor_parallel_plugin_benchmark test/benchmark_parallel_plugin.cpp src/libconveyor_resource.cpp)
+    target_compile_definitions(conveyor_parallel_plugin_benchmark PRIVATE STANDALONE_MODE)
+    target_include_directories(conveyor_parallel_plugin_benchmark PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/test/mock_irods
         /opt/irods-externals/boost1.81.0-2/include
         ${libconveyor_SOURCE_DIR}/include
     )
-    target_link_libraries(conveyor_plugin_benchmark PRIVATE
+    target_link_libraries(conveyor_parallel_plugin_benchmark PRIVATE
         conveyor
         Boost::boost
     )

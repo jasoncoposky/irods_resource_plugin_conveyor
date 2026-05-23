@@ -1,4 +1,5 @@
-/home/darkfell/dev/irods_resource_plugin_conveyor/build/CMakeFiles/irods_resource_plugin_conveyor.dir
+/home/darkfell/dev/irods_resource_plugin_conveyor/build/CMakeFiles/conveyor_standalone_test.dir
+/home/darkfell/dev/irods_resource_plugin_conveyor/build/CMakeFiles/conveyor_parallel_plugin_benchmark.dir
 /home/darkfell/dev/irods_resource_plugin_conveyor/build/CMakeFiles/run_tests.dir
 /home/darkfell/dev/irods_resource_plugin_conveyor/build/CMakeFiles/package.dir
 /home/darkfell/dev/irods_resource_plugin_conveyor/build/CMakeFiles/package_source.dir

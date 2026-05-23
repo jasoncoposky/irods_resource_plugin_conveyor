@@ -70,32 +70,32 @@ include _deps/libconveyor-build/CMakeFiles/conveyor.dir/progress.make
 include _deps/libconveyor-build/CMakeFiles/conveyor.dir/flags.make
 
 _deps/libconveyor-build/CMakeFiles/conveyor.dir/src/conveyor.cpp.o: _deps/libconveyor-build/CMakeFiles/conveyor.dir/flags.make
-_deps/libconveyor-build/CMakeFiles/conveyor.dir/src/conveyor.cpp.o: _deps/libconveyor-src/src/conveyor.cpp
+_deps/libconveyor-build/CMakeFiles/conveyor.dir/src/conveyor.cpp.o: /home/darkfell/dev/libconveyor/src/conveyor.cpp
 _deps/libconveyor-build/CMakeFiles/conveyor.dir/src/conveyor.cpp.o: _deps/libconveyor-build/CMakeFiles/conveyor.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/darkfell/dev/irods_resource_plugin_conveyor/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object _deps/libconveyor-build/CMakeFiles/conveyor.dir/src/conveyor.cpp.o"
-	cd /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-build && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/libconveyor-build/CMakeFiles/conveyor.dir/src/conveyor.cpp.o -MF CMakeFiles/conveyor.dir/src/conveyor.cpp.o.d -o CMakeFiles/conveyor.dir/src/conveyor.cpp.o -c /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-src/src/conveyor.cpp
+	cd /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-build && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/libconveyor-build/CMakeFiles/conveyor.dir/src/conveyor.cpp.o -MF CMakeFiles/conveyor.dir/src/conveyor.cpp.o.d -o CMakeFiles/conveyor.dir/src/conveyor.cpp.o -c /home/darkfell/dev/libconveyor/src/conveyor.cpp
 
 _deps/libconveyor-build/CMakeFiles/conveyor.dir/src/conveyor.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/conveyor.dir/src/conveyor.cpp.i"
-	cd /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-build && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-src/src/conveyor.cpp > CMakeFiles/conveyor.dir/src/conveyor.cpp.i
+	cd /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-build && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/darkfell/dev/libconveyor/src/conveyor.cpp > CMakeFiles/conveyor.dir/src/conveyor.cpp.i
 
 _deps/libconveyor-build/CMakeFiles/conveyor.dir/src/conveyor.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/conveyor.dir/src/conveyor.cpp.s"
-	cd /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-build && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-src/src/conveyor.cpp -o CMakeFiles/conveyor.dir/src/conveyor.cpp.s
+	cd /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-build && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/darkfell/dev/libconveyor/src/conveyor.cpp -o CMakeFiles/conveyor.dir/src/conveyor.cpp.s
 
 _deps/libconveyor-build/CMakeFiles/conveyor.dir/src/ThreadPool.cpp.o: _deps/libconveyor-build/CMakeFiles/conveyor.dir/flags.make
-_deps/libconveyor-build/CMakeFiles/conveyor.dir/src/ThreadPool.cpp.o: _deps/libconveyor-src/src/ThreadPool.cpp
+_deps/libconveyor-build/CMakeFiles/conveyor.dir/src/ThreadPool.cpp.o: /home/darkfell/dev/libconveyor/src/ThreadPool.cpp
 _deps/libconveyor-build/CMakeFiles/conveyor.dir/src/ThreadPool.cpp.o: _deps/libconveyor-build/CMakeFiles/conveyor.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/darkfell/dev/irods_resource_plugin_conveyor/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object _deps/libconveyor-build/CMakeFiles/conveyor.dir/src/ThreadPool.cpp.o"
-	cd /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-build && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/libconveyor-build/CMakeFiles/conveyor.dir/src/ThreadPool.cpp.o -MF CMakeFiles/conveyor.dir/src/ThreadPool.cpp.o.d -o CMakeFiles/conveyor.dir/src/ThreadPool.cpp.o -c /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-src/src/ThreadPool.cpp
+	cd /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-build && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/libconveyor-build/CMakeFiles/conveyor.dir/src/ThreadPool.cpp.o -MF CMakeFiles/conveyor.dir/src/ThreadPool.cpp.o.d -o CMakeFiles/conveyor.dir/src/ThreadPool.cpp.o -c /home/darkfell/dev/libconveyor/src/ThreadPool.cpp
 
 _deps/libconveyor-build/CMakeFiles/conveyor.dir/src/ThreadPool.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/conveyor.dir/src/ThreadPool.cpp.i"
-	cd /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-build && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-src/src/ThreadPool.cpp > CMakeFiles/conveyor.dir/src/ThreadPool.cpp.i
+	cd /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-build && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/darkfell/dev/libconveyor/src/ThreadPool.cpp > CMakeFiles/conveyor.dir/src/ThreadPool.cpp.i
 
 _deps/libconveyor-build/CMakeFiles/conveyor.dir/src/ThreadPool.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/conveyor.dir/src/ThreadPool.cpp.s"
-	cd /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-build && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-src/src/ThreadPool.cpp -o CMakeFiles/conveyor.dir/src/ThreadPool.cpp.s
+	cd /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-build && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/darkfell/dev/libconveyor/src/ThreadPool.cpp -o CMakeFiles/conveyor.dir/src/ThreadPool.cpp.s
 
 # Object files for target conveyor
 conveyor_OBJECTS = \
@@ -122,6 +122,6 @@ _deps/libconveyor-build/CMakeFiles/conveyor.dir/clean:
 .PHONY : _deps/libconveyor-build/CMakeFiles/conveyor.dir/clean
 
 _deps/libconveyor-build/CMakeFiles/conveyor.dir/depend:
-	cd /home/darkfell/dev/irods_resource_plugin_conveyor/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/darkfell/dev/irods_resource_plugin_conveyor /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-src /home/darkfell/dev/irods_resource_plugin_conveyor/build /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-build /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-build/CMakeFiles/conveyor.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd /home/darkfell/dev/irods_resource_plugin_conveyor/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/darkfell/dev/irods_resource_plugin_conveyor /home/darkfell/dev/libconveyor /home/darkfell/dev/irods_resource_plugin_conveyor/build /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-build /home/darkfell/dev/irods_resource_plugin_conveyor/build/_deps/libconveyor-build/CMakeFiles/conveyor.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : _deps/libconveyor-build/CMakeFiles/conveyor.dir/depend
 
