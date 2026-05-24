@@ -56,6 +56,7 @@ endif()
 # --- Build iRODS Plugin ---
 if(NOT STANDALONE_TEST)
     add_library(irods_resource_plugin_conveyor MODULE src/libconveyor_resource.cpp)
+    set_target_properties(irods_resource_plugin_conveyor PROPERTIES OUTPUT_NAME "conveyor")
 
     target_compile_definitions(irods_resource_plugin_conveyor PRIVATE RODS_SERVER IRODS_ENABLE_SYSLOG)
 
