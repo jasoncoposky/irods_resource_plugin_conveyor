@@ -80,25 +80,35 @@ namespace {
         return SUCCESS();
     }
 
+    // --- 2. Conveyor Mapping ---
+    struct conveyor_info {
+        conveyor_t* conv;
+        conveyor_context* ctx;
+        std::string intent;
+    };
+    static std::unordered_map<std::string, conveyor_info> g_conveyor_table;
+    static std::shared_mutex g_conveyor_mutex;
+    static std::unordered_map<std::string, std::string> g_intent_cache; // p_path -> intent
+
     irods::error flush_if_needed(irods::plugin_context& _ctx) {
         auto fco = boost::dynamic_pointer_cast<irods::file_object>(_ctx.fco());
         if (!fco) return SUCCESS();
+        std::string p_path = fco->physical_path();
+        
         conveyor_t* conv = nullptr;
-        if (fco->get_property<conveyor_t*>(CONVEYOR_HANDLE_PROP, conv).ok()) {
+        {
+            std::shared_lock lock(g_conveyor_mutex);
+            auto it = g_conveyor_table.find(p_path);
+            if (it != g_conveyor_table.end()) conv = it->second.conv;
+        }
+
+        if (conv) {
             if (conveyor_flush(conv) == LIBCONVEYOR_ERROR) {
                 return check_conveyor_error(conv);
             }
         }
         return SUCCESS();
     }
-
-    // --- 2. Conveyor Mapping ---
-    struct conveyor_info {
-        conveyor_t* conv;
-        conveyor_context* ctx;
-    };
-    static std::unordered_map<std::string, conveyor_info> g_conveyor_table;
-    static std::shared_mutex g_conveyor_mutex;
 
     irods::error conveyor_get_first_child_resc(irods::plugin_context& _ctx, irods::resource_ptr& _resc) {
         irods::resource_child_map* cmap_ref = nullptr;
@@ -113,10 +123,6 @@ irods::error get_conveyor(irods::plugin_context& _ctx, conveyor_t*& conv) {
     auto fco = boost::dynamic_pointer_cast<irods::file_object>(_ctx.fco());
     if (!fco) return ERROR(SYS_INVALID_INPUT_PARAM, "conveyor: null fco");
 
-    if (fco->get_property<conveyor_t*>(CONVEYOR_HANDLE_PROP, conv).ok()) {
-        return SUCCESS();
-    }
-
     std::string p_path = fco->physical_path();
     if (p_path.empty()) return ERROR(SYS_INVALID_INPUT_PARAM, "conveyor: empty physical path");
 
@@ -125,7 +131,6 @@ irods::error get_conveyor(irods::plugin_context& _ctx, conveyor_t*& conv) {
         auto it = g_conveyor_table.find(p_path);
         if (it != g_conveyor_table.end()) {
             conv = it->second.conv;
-            fco->set_property<conveyor_t*>(CONVEYOR_HANDLE_PROP, conv); 
             return SUCCESS();
         }
     }
@@ -136,7 +141,11 @@ irods::error get_conveyor(irods::plugin_context& _ctx, conveyor_t*& conv) {
         auto* c_ctx = new conveyor_context{child, _ctx.fco(), _ctx.comm()};
 
         std::string intent = ""; 
-        fco->get_property<std::string>(CONVEYOR_INTENT_PROP, intent);
+        {
+            std::shared_lock lock(g_conveyor_mutex);
+            auto it = g_intent_cache.find(p_path);
+            if (it != g_intent_cache.end()) intent = it->second;
+        }
 
         conveyor_config_t cfg = {0};
         cfg.handle = static_cast<storage_handle_t>(c_ctx);
@@ -179,11 +188,10 @@ irods::error get_conveyor(irods::plugin_context& _ctx, conveyor_t*& conv) {
 
         {
             std::unique_lock lock(g_conveyor_mutex);
-            g_conveyor_table[p_path] = {conv, c_ctx};
+            g_conveyor_table[p_path] = {conv, c_ctx, intent};
+            g_intent_cache.erase(p_path);
         }
         
-        fco->set_property<conveyor_t*>(CONVEYOR_HANDLE_PROP, conv);
-
         log_resc::debug("conveyor: created for path [{}] with intent [{}]", p_path, intent);
         return SUCCESS();
     }
@@ -389,7 +397,7 @@ irods::error get_conveyor(irods::plugin_context& _ctx, conveyor_t*& conv) {
         
         if (_op) {
             auto fco = boost::dynamic_pointer_cast<irods::file_object>(_ctx.fco());
-            if (fco) fco->set_property<std::string>(CONVEYOR_INTENT_PROP, *_op);
+            if (fco) _ctx.prop_map().set<std::string>(CONVEYOR_INTENT_PROP, *_op);
         }
 
         irods::resource_ptr child;
