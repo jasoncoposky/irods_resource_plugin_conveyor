@@ -63,10 +63,9 @@ Benchmark conditions: **50 ms** Simulated Backend Latency, **16 MB** Data Volume
 | :--- | :--- | :--- | :--- |
 | **Write Total Time** | 12.8 s | **0.65 s** | **~20x** |
 | **Read Total Time (Hot)** | 12.8 s | **0.18 ms** | **~68,000x** |
-| **Read Throughput (Hot)**| 1.25 MB/s | **85,465 MB/s** | **~68,000x** |
-| **Parallel Handoff (16 Threads)** | - | **13,457 MB/s** | **NEW** |
+| **Parallel Handoff (16 Threads)** | - | **13,457 MB/s** | **13.4 GB/s** |
 
-- **Zero-Latency Write Handoff**: Concurrent agent throughput exceeds 13 GB/s, saturating local memory-bus speeds.
+- **Zero-Latency Write Handoff**: Concurrent agent throughput exceeds **13.4 GB/s**, limited only by local memory-bus speeds. This "Firewall Effect" effectively decouples iRODS agent performance from storage latency.
 - **Hot-Cache Snoop Speed**: Reads from the write-ahead buffer return at RAM speeds (~85,000 MB/s+).
 - **Enterprise Stability**: Transitioned to a persistent **ThreadPool Singleton** to eliminate affinity races and ensure stable teardown in high-concurrency environments.
 - **Consolidated Compute**: Shared background threads amortize initialization costs and minimize system context-switching.
