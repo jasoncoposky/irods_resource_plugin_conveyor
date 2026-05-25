@@ -19,7 +19,8 @@ endif()
 include(FetchContent)
 FetchContent_Declare(
   libconveyor
-  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../libconveyor
+  GIT_REPOSITORY https://github.com/jasoncoposky/libconveyor.git
+  GIT_TAG        main
 )
 FetchContent_MakeAvailable(libconveyor)
 
