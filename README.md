@@ -45,8 +45,8 @@ The Conveyor plugin is built for extreme reliability in mission-critical iRODS e
 The Conveyor resource is a **Coordinating Resource**. It must be placed in a hierarchy above a storage resource.
 
 ```bash
-iadmin mkresc conveyor_resc coordinating conveyor ""
-iadmin addchildtoresc conveyor_resc unixfilesystem_resc
+iadmin mkresc conveyor_resc conveyor <hostname>:"" ""
+iadmin addchildtoresc conveyor_resc storage_resc
 ```
 
 ### Performance Tuning
