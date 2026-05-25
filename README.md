@@ -50,10 +50,16 @@ iadmin addchildtoresc conveyor_resc storage_resc
 ```
 
 ### Performance Tuning
-Tune the engine for high-latency links via the resource context:
+Tune the engine for high-latency links by setting the resource context. The format is **strictly** `key=value;key=value`.
+
 ```bash
+# Example: Setting 32MB chunks for both read and write
 iadmin modresc conveyor_resc context "write_chunk_size=33554432;read_chunk_size=33554432"
 ```
+
+**Supported Keys:**
+- `write_chunk_size`: Size of segments for asynchronous writes (default: 32MB).
+- `read_chunk_size`: Size of prefetch chunks for asynchronous reads (default: 32MB).
 
 ## Performance Results (Verified)
 

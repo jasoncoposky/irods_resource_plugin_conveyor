@@ -28,6 +28,7 @@
 #include <vector>
 #include <string>
 #include <functional>
+#include <sstream>
 #include <unistd.h>
 #include <sys/types.h>
 #include <fcntl.h>
@@ -160,17 +161,22 @@ irods::error get_conveyor(irods::plugin_context& _ctx, conveyor_t*& conv) {
         cfg.read_chunk_size = 32 * 1024 * 1024;
 
         std::string context;
-        _ctx.prop_map().get<std::string>(irods::RESOURCE_CONTEXT, context);
-        if (!context.empty()) {
-            size_t pos = context.find("write_chunk_size=");
-            if (pos != std::string::npos) {
-                size_t end = context.find(';', pos);
-                cfg.write_chunk_size = std::stoull(context.substr(pos + 17, end - (pos + 17)));
-            }
-            pos = context.find("read_chunk_size=");
-            if (pos != std::string::npos) {
-                size_t end = context.find(';', pos);
-                cfg.read_chunk_size = std::stoull(context.substr(pos + 16, end - (pos + 16)));
+        if (_ctx.prop_map().get<std::string>(irods::RESOURCE_CONTEXT, context).ok() && !context.empty()) {
+            std::stringstream ss(context);
+            std::string token;
+            while (std::getline(ss, token, ';')) {
+                if (token.empty()) continue;
+                size_t kv_pos = token.find('=');
+                if (kv_pos != std::string::npos) {
+                    std::string key = token.substr(0, kv_pos);
+                    std::string val = token.substr(kv_pos + 1);
+                    try {
+                        if (key == "write_chunk_size") cfg.write_chunk_size = std::stoull(val);
+                        else if (key == "read_chunk_size") cfg.read_chunk_size = std::stoull(val);
+                    } catch (const std::exception& e) {
+                        log_resc::error("conveyor: failed to parse context value [{}] for key [{}]", val, key);
+                    }
+                }
             }
         }
 
